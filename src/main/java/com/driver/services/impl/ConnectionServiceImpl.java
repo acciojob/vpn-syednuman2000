@@ -74,7 +74,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         CountryName reciverCountryName = null;
         if(reciver.getConnected()){
             String reciverCountryCode;
-            String arr[] = reciver.getMaskedIp().split(".");
+            String[] arr = reciver.getMaskedIp().split("\\.");
             reciverCountryCode = arr[0];
             for(CountryName countryName : CountryName.values()){
                 if(countryName.toCode().equals(reciverCountryCode)){
