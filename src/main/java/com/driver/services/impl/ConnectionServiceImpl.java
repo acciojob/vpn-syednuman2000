@@ -37,7 +37,6 @@ public class ConnectionServiceImpl implements ConnectionService {
                 if(country.getCountryName().equals(CountryName.valueOf(countryName))){
                     if(serviceProvider.getId() < serviceProviderId){
                         serviceProviderId = serviceProvider.getId();
-                        break;
                     }
                 }
             }
