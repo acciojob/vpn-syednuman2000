@@ -96,8 +96,6 @@ public class ConnectionServiceImpl implements ConnectionService {
             throw new Exception("Cannot establish communication");
         }
 
-        userRepository2.save(sender);
-
         return sender;
     }
 }
