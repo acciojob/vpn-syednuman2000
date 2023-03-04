@@ -48,15 +48,8 @@ public class ConnectionServiceImpl implements ConnectionService {
             throw new Exception("Unable to connect");
         }
 
-        ServiceProvider serviceProvider = serviceProviderRepository2.findById(serviceProviderId).get();
-
-        Connection connection = new Connection();
-        connection.setUser(user);
-        connection.setServiceProvider(serviceProvider);
-
         user.setConnected(true);
         user.setMaskedIp(CountryName.valueOf(countryName).toCode()+"."+serviceProviderId+"."+userId);
-        user.getConnectionList().add(connection);
 
         userRepository2.save(user);
 
