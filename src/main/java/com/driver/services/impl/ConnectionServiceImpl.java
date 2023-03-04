@@ -32,50 +32,36 @@ public class ConnectionServiceImpl implements ConnectionService {
         if (user.getServiceProviderList().size()==0){
             throw new Exception("Unable to connect");
         }
-        List<ServiceProvider>serviceProviderList=user.getServiceProviderList();
-        int a=Integer.MAX_VALUE;
-        ServiceProvider serviceProvider=null;
-        Country country=null;
-
-        Boolean flag=false;
-
-        //traversing each service providers
-        for(ServiceProvider serviceProvider1: serviceProviderList){
-
-            List<Country>countryList=serviceProvider1.getCountryList();
-            //traversing each country of service provider
-            for(Country country1: countryList){
-                if(countryName.equalsIgnoreCase(country1.getCountryName().toString()) && a>serviceProvider1.getId()){
-                    a=serviceProvider1.getId();
-                    serviceProvider=serviceProvider1;
-                    country=country1;
-
-                    flag=true;
+        List<ServiceProvider> serviceProviderList = user.getServiceProviderList();
+        int serviceProviderId = Integer.MAX_VALUE;
+        for(ServiceProvider serviceProvider : serviceProviderList){
+            List<Country> countryList = serviceProvider.getCountryList();
+            for(Country country : countryList){
+                if(country.getCountryName().equals(CountryName.valueOf(countryName))){
+                    if(serviceProvider.getId() < serviceProviderId){
+                        serviceProviderId = serviceProvider.getId();
+                    }
                 }
             }
         }
-
-        if(!flag){
+        if(serviceProviderId == Integer.MAX_VALUE){
             throw new Exception("Unable to connect");
         }
-        //here we have service provider present with given countryname so make a connection
+
+        ServiceProvider serviceProvider = serviceProviderRepository2.findById(serviceProviderId).get();
+
         Connection connection=new Connection();
         connection.setUser(user);
         connection.setServiceProvider(serviceProvider);
 
-        //set the maskedIp as "updatedCountryCode.serviceProviderId.userId"
-        String countryCode=country.getCode();
-        String mask=countryCode+"."+serviceProvider.getId()+"."+userId;
-
-        user.setMaskedIp(mask);
         user.setConnected(true);
+        user.setMaskedIp(CountryName.valueOf(countryName).toCode()+"."+serviceProviderId+"."+userId);
 
         user.getConnectionList().add(connection);
 
         serviceProvider.getConnectionList().add(connection);
 
         userRepository2.save(user);
-        serviceProviderRepository2.save(serviceProvider);
 
         return user;
     }
