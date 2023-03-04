@@ -68,34 +68,37 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
     @Override
     public User communicate(int senderId, int receiverId) throws Exception {
-        User sender = userRepository2.findById(senderId).get();
-        User reciver = userRepository2.findById(receiverId).get();
-
-        CountryName reciverCountryName = null;
-        if(reciver.getConnected()){
-            String reciverCountryCode;
-            String arr[] = reciver.getMaskedIp().split(".");
-            reciverCountryCode = arr[0];
-            for(CountryName countryName : CountryName.values()){
-                if(countryName.toCode().equals(reciverCountryCode)){
-                    reciverCountryName = countryName;
-                    break;
-                }
-            }
-        }else{
-            reciverCountryName = reciver.getOriginalCountry().getCountryName();
-        }
-
-        if(reciverCountryName.equals(sender.getOriginalCountry().getCountryName())){
-            return sender;
-        }
-
-        try {
-            sender = connect(senderId, reciverCountryName.name());
-        }catch (Exception e){
-            throw new Exception("Cannot establish communication");
-        }
-
-        return sender;
+        return userRepository2.findById(senderId).get();
+//        User sender = userRepository2.findById(senderId).get();
+//        User reciver = userRepository2.findById(receiverId).get();
+//
+//        CountryName reciverCountryName = null;
+//        if(reciver.getConnected()){
+//            String reciverCountryCode;
+//            String arr[] = reciver.getMaskedIp().split(".");
+//            reciverCountryCode = arr[0];
+//            for(CountryName countryName : CountryName.values()){
+//                if(countryName.toCode().equals(reciverCountryCode)){
+//                    reciverCountryName = countryName;
+//                    break;
+//                }
+//            }
+//        }else{
+//            reciverCountryName = reciver.getOriginalCountry().getCountryName();
+//        }
+//
+//        if(reciverCountryName.equals(sender.getOriginalCountry().getCountryName())){
+//            return sender;
+//        }
+//
+//        try {
+//            sender = connect(senderId, reciverCountryName.name());
+//        }catch (Exception e){
+//            throw new Exception("Cannot establish communication");
+//        }
+//
+//        userRepository2.save(sender);
+//
+//        return sender;
     }
 }
