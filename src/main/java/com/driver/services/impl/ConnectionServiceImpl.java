@@ -29,6 +29,9 @@ public class ConnectionServiceImpl implements ConnectionService {
         if(user.getOriginalCountry().getCountryName().equals(CountryName.valueOf(countryName))){
             return user;
         }
+        if (user.getServiceProviderList()==null){
+            throw new Exception("Unable to connect");
+        }
         List<ServiceProvider> serviceProviderList = user.getServiceProviderList();
         int serviceProviderId = Integer.MAX_VALUE;
         for(ServiceProvider serviceProvider : serviceProviderList){
@@ -45,8 +48,15 @@ public class ConnectionServiceImpl implements ConnectionService {
             throw new Exception("Unable to connect");
         }
 
+        ServiceProvider serviceProvider = serviceProviderRepository2.findById(serviceProviderId).get();
+
+        Connection connection = new Connection();
+        connection.setUser(user);
+        connection.setServiceProvider(serviceProvider);
+
         user.setConnected(true);
         user.setMaskedIp(CountryName.valueOf(countryName).toCode()+"."+serviceProviderId+"."+userId);
+        user.getConnectionList().add(connection);
 
         userRepository2.save(user);
 
