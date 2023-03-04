@@ -56,16 +56,15 @@ public class ConnectionServiceImpl implements ConnectionService {
     @Override
     public User disconnect(int userId) throws Exception {
         User user = userRepository2.findById(userId).get();
+        if(!user.getConnected()){
+            throw new Exception("Already disconnected");
+        }
+        user.setMaskedIp(null);
+        user.setConnected(false);
+
+        userRepository2.save(user);
+
         return user;
-//        if(!user.getConnected()){
-//            throw new Exception("Already disconnected");
-//        }
-//        user.setMaskedIp(null);
-//        user.setConnected(false);
-//
-//        userRepository2.save(user);
-//
-//        return user;
     }
     @Override
     public User communicate(int senderId, int receiverId) throws Exception {
