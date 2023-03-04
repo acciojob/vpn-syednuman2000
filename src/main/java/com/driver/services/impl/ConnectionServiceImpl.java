@@ -21,51 +21,51 @@ public class ConnectionServiceImpl implements ConnectionService {
 
     @Override
     public User connect(int userId, String countryName) throws Exception{
-        return new User();
-//        User user = userRepository2.findById(userId).get();
-//        countryName = countryName.toUpperCase();
-//        if(user.getConnected()){
-//            throw new Exception("Already connected");
-//        }
-//        if(user.getOriginalCountry().getCountryName().equals(CountryName.valueOf(countryName))){
-//            return user;
-//        }
-//        List<ServiceProvider> serviceProviderList = user.getServiceProviderList();
-//        int serviceProviderId = Integer.MAX_VALUE;
-//        for(ServiceProvider serviceProvider : serviceProviderList){
-//            List<Country> countryList = serviceProvider.getCountryList();
-//            for(Country country : countryList){
-//                if(country.getCountryName().equals(CountryName.valueOf(countryName))){
-//                    if(serviceProvider.getId() < serviceProviderId){
-//                        serviceProviderId = serviceProvider.getId();
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//        if(serviceProviderId == Integer.MAX_VALUE){
-//            throw new Exception("Unable to connect");
-//        }
-//
-//        user.setConnected(true);
-//        user.setMaskedIp(CountryName.valueOf(countryName).toCode()+"."+serviceProviderId+"."+userId);
-//
-//        userRepository2.save(user);
-//
-//        return user;
-    }
-    @Override
-    public User disconnect(int userId) throws Exception {
         User user = userRepository2.findById(userId).get();
-        if(!user.getConnected()){
-            throw new Exception("Already disconnected");
+        countryName = countryName.toUpperCase();
+        if(user.getConnected()){
+            throw new Exception("Already connected");
         }
-        user.setMaskedIp(null);
-        user.setConnected(false);
+        if(user.getOriginalCountry().getCountryName().equals(CountryName.valueOf(countryName))){
+            return user;
+        }
+        List<ServiceProvider> serviceProviderList = user.getServiceProviderList();
+        int serviceProviderId = Integer.MAX_VALUE;
+        for(ServiceProvider serviceProvider : serviceProviderList){
+            List<Country> countryList = serviceProvider.getCountryList();
+            for(Country country : countryList){
+                if(country.getCountryName().equals(CountryName.valueOf(countryName))){
+                    if(serviceProvider.getId() < serviceProviderId){
+                        serviceProviderId = serviceProvider.getId();
+                        break;
+                    }
+                }
+            }
+        }
+        if(serviceProviderId == Integer.MAX_VALUE){
+            throw new Exception("Unable to connect");
+        }
+
+        user.setConnected(true);
+        user.setMaskedIp(CountryName.valueOf(countryName).toCode()+"."+serviceProviderId+"."+userId);
 
         userRepository2.save(user);
 
         return user;
+    }
+    @Override
+    public User disconnect(int userId) throws Exception {
+        User user = userRepository2.findById(userId).get();
+        return user;
+//        if(!user.getConnected()){
+//            throw new Exception("Already disconnected");
+//        }
+//        user.setMaskedIp(null);
+//        user.setConnected(false);
+//
+//        userRepository2.save(user);
+//
+//        return user;
     }
     @Override
     public User communicate(int senderId, int receiverId) throws Exception {
